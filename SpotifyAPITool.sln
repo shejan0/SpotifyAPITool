@@ -3,7 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.32106.194
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SpotifyAPITool", "SpotifyAPITool\SpotifyAPITool.csproj", "{9A5D1D66-F71C-448E-8B95-3E673A75775A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SpotifyAPITool", "SpotifyAPITool\SpotifyAPITool.csproj", "{9A5D1D66-F71C-448E-8B95-3E673A75775A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClientDetails", "ClientDetails\ClientDetails.csproj", "{24C8AC87-0107-4F38-945C-5F7F1489620C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JSONScrubber", "JSONScrubber\JSONScrubber.csproj", "{42538796-141D-4E2E-95F7-D44137008A62}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +19,14 @@ Global
 		{9A5D1D66-F71C-448E-8B95-3E673A75775A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9A5D1D66-F71C-448E-8B95-3E673A75775A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9A5D1D66-F71C-448E-8B95-3E673A75775A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{24C8AC87-0107-4F38-945C-5F7F1489620C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{24C8AC87-0107-4F38-945C-5F7F1489620C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{24C8AC87-0107-4F38-945C-5F7F1489620C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{24C8AC87-0107-4F38-945C-5F7F1489620C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{42538796-141D-4E2E-95F7-D44137008A62}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{42538796-141D-4E2E-95F7-D44137008A62}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{42538796-141D-4E2E-95F7-D44137008A62}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{42538796-141D-4E2E-95F7-D44137008A62}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
