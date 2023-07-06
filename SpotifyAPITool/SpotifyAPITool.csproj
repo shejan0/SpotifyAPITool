@@ -14,4 +14,10 @@
     <ProjectReference Include="..\ClientDetails\ClientDetails.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="found.tsv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>
