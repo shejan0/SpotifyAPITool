@@ -6,6 +6,9 @@ using System.IO;
 using SpotifyAPI.Web;
 using SpotifyAPI.Web.Auth;
 using ClientDetails;
+using Humanizer;
+using SpotifyAPI.Web.Http;
+using Swan.Logging;
 namespace SpotifyAPITool
 {
     class Program
@@ -192,24 +195,69 @@ namespace SpotifyAPITool
                 int n = 0;
 
                 List<SavedTrack> liked = new List<SavedTrack>();
-                
-                var saved = await client.Library.GetTracks(new LibraryTracksRequest()
+                TimeSpan durationsongs = new TimeSpan();
+                using (var writer = new StreamWriter($"saved-{DateTimeOffset.UtcNow.ToUnixTimeSeconds()}.tsv")
                 {
-                    Limit = 50
-                });
-                while (n<saved.Total)
+                    AutoFlush = true
+                })
                 {
-                    
-                    saved = await client.Library.GetTracks(new LibraryTracksRequest()
+                    writer.WriteLine("ID\tName\tArtists\tDurationMicroSeconds\tDurationHumanReadable\tAlbumName\tUri");
+                    var saved = await client.Library.GetTracks(new LibraryTracksRequest()
                     {
-                        Limit = 50,
-                        Offset=n
+                        Limit = 50
                     });
-                    liked.AddRange(saved.Items);
-                    n += saved.Items.Count;
-                    Console.WriteLine("Current size of saved in RAM: " + n);
+                    while (n < saved.Total)
+                    {
+                        try
+                        {
+                            saved = await client.Library.GetTracks(new LibraryTracksRequest()
+                            {
+                                Limit = 50,
+                                Offset = n
+                            });
+                        }catch(APIException ex)
+                        {
+                            Console.Error.WriteLine(ex.Message);
+                            Console.Error.WriteLine(ex.StackTrace);
+                            Console.Error.WriteLine(ex.Response.StatusCode);
+                            Console.Error.WriteLine(ex.Response.Body);
+                            if(ex.Response.StatusCode == System.Net.HttpStatusCode.BadGateway)
+                            {
+                                continue;
+                            }
+                            throw;
+                        }
+                        
+                        liked.AddRange(saved.Items);
+                        for(int a = n; a< liked.Count(); a++)
+                        {
+                            FullTrack track = liked[a].Track;
+                            if (track.IsLocal)
+                            {
+                                continue;
+                            }
+                            List<string> trackdetails = new()
+                        {
+                            track.Id,
+                            track.Name,
+                            string.Join('|', track.Artists.Select(x => x.Name)),
+                            (track.DurationMs).ToString(),
+                            TimeSpan.FromMilliseconds(track.DurationMs).Humanize(precision:3,minUnit:Humanizer.Localisation.TimeUnit.Second),
+                            track.Album.Name,
+                            track.Uri,
+                        };
+                            durationsongs += TimeSpan.FromMilliseconds(track.DurationMs);
+                            writer.WriteLine(string.Join('\t', trackdetails));
+                        }
+                        n += saved.Items.Count;
+                        Console.WriteLine("Current size of saved in RAM: " + n);
+                    }
+                    string s = durationsongs.Humanize(precision: 10, maxUnit: Humanizer.Localisation.TimeUnit.Month);
+                    writer.WriteLine(s);
+                    Console.WriteLine(s);
                 }
-                Console.WriteLine("Creating playlist");
+
+                /*Console.WriteLine("Creating playlist");
                 FullPlaylist newplaylist = await client.Playlists.Create(p.Id, new PlaylistCreateRequest("Liked " + DateTime.Now.ToString())
                 {
                     Public = false,
@@ -226,9 +274,22 @@ namespace SpotifyAPITool
                         {
                             continue;
                         }
-                        writer.WriteLine(track.Id + "\t" + track.Name + "\t" + string.Join('|', track.Artists.Select(x => x.Name)));
+                        List<string> trackdetails = new()
+                        {
+                            track.Id,
+                            track.Name,
+                            string.Join('|', track.Artists.Select(x => x.Name)),
+                            (track.DurationMs*1000.0).ToString(),
+                            track.Album.Name,
+                            track.Uri,
+                        };
+                        durationsongs += TimeSpan.FromMilliseconds(track.DurationMs / 1000.0);
+                        writer.WriteLine(string.Join('\t', trackdetails));
+                        //writer.WriteLine(track.Id + "\t" + track.Name + "\t" + string.Join('|', track.Artists.Select(x => x.Name)));
+                        
                     }
-                }
+                }*/
+                /*
                 List<string> uri = new List<string>();
                 for(int a = 0; a < n; a++)
                 {
@@ -252,6 +313,8 @@ namespace SpotifyAPITool
                     await client.Playlists.AddItems(newplaylist.Id, new PlaylistAddItemsRequest(uri));
                     uri.Clear();
                 }
+                */
+                Environment.Exit(0);
                 /*foreach (SavedTrack strack in liked)
                 {
                     FullTrack track = strack.Track;
