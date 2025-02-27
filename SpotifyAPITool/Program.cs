@@ -196,6 +196,13 @@ namespace SpotifyAPITool
 
                 List<SavedTrack> liked = new List<SavedTrack>();
                 TimeSpan durationsongs = new TimeSpan();
+                Console.WriteLine("Creating playlist");
+                string playlistname = "Liked " + DateTime.Now.ToString();
+                int parts = -1;
+                FullPlaylist newplaylist = await client.Playlists.Create(p.Id, new PlaylistCreateRequest(playlistname)
+                {
+                    Public = false,
+                });
                 using (var writer = new StreamWriter($"saved-{DateTimeOffset.UtcNow.ToUnixTimeSeconds()}.tsv")
                 {
                     AutoFlush = true
@@ -249,7 +256,16 @@ namespace SpotifyAPITool
                             durationsongs += TimeSpan.FromMilliseconds(track.DurationMs);
                             writer.WriteLine(string.Join('\t', trackdetails));
                         }
+                        await client.Playlists.AddItems(newplaylist.Id, new PlaylistAddItemsRequest(saved.Items.Select(x => x.Track.Uri).ToList()));
                         n += saved.Items.Count;
+                        if (n % 10000 == 0)
+                        {
+                            newplaylist = await client.Playlists.Create(p.Id, new PlaylistCreateRequest($"{playlistname}-part {parts}")
+                            {
+                                Public = false,
+                            });
+                            parts--;
+                        }
                         Console.WriteLine("Current size of saved in RAM: " + n);
                     }
                     string s = durationsongs.Humanize(precision: 10, maxUnit: Humanizer.Localisation.TimeUnit.Month);
@@ -257,11 +273,7 @@ namespace SpotifyAPITool
                     Console.WriteLine(s);
                 }
 
-                /*Console.WriteLine("Creating playlist");
-                FullPlaylist newplaylist = await client.Playlists.Create(p.Id, new PlaylistCreateRequest("Liked " + DateTime.Now.ToString())
-                {
-                    Public = false,
-                });
+                /*
                 using (var writer = new StreamWriter($"saved-{DateTimeOffset.UtcNow.ToUnixTimeSeconds()}.tsv")
                 {
                     AutoFlush = true
