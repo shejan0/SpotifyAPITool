@@ -201,7 +201,7 @@ namespace SpotifyAPITool
                     AutoFlush = true
                 })
                 {
-                    writer.WriteLine("ID\tName\tArtists\tDurationMicroSeconds\tDurationHumanReadable\tAlbumName\tUri");
+                    writer.WriteLine("ID\tName\tArtists\tDurationMilliSeconds\tDurationHumanReadable\tAlbumName\tUri");
                     var saved = await client.Library.GetTracks(new LibraryTracksRequest()
                     {
                         Limit = 50
