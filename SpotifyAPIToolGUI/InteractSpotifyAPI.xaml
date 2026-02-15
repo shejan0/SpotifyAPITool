@@ -1,0 +1,17 @@
+﻿<Window x:Class="SpotifyAPIToolGUI.InteractSpotifyAPI"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:SpotifyAPIToolGUI"
+        mc:Ignorable="d"
+        Title="InteractSpotifyAPI" Height="450" Width="800">
+    <Grid>
+        <Button x:Name="pullLiked" Content="Pull Liked List" HorizontalAlignment="Left" Margin="33,27,0,0" VerticalAlignment="Top" Click="pullLiked_Click"/>
+        <Label x:Name="pullingLabel" Content="" HorizontalAlignment="Left" Margin="137,21,0,0" VerticalAlignment="Top" Width="273"/>
+        <Button x:Name="writeTSVButton" Content="Write TSV" HorizontalAlignment="Left" Margin="137,52,0,0" VerticalAlignment="Top" Visibility="Hidden" Click="writeTSVButton_Click" />
+        <Button x:Name="showLength" Content="Calculate Duration" HorizontalAlignment="Left" Margin="198,52,0,0" VerticalAlignment="Top" Visibility="Hidden" Click="showLength_Click" />
+        <Button x:Name="createPlayListButton" Content="Create Playlist" HorizontalAlignment="Left" Margin="305,52,0,0" VerticalAlignment="Top" Visibility="Hidden" Click="createPlayList_Click" />
+
+    </Grid>
+</Window>

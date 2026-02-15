@@ -1,0 +1,19 @@
+﻿<Window x:Class="SpotifyAPIToolGUI.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:SpotifyAPIToolGUI"
+        mc:Ignorable="d"
+        Title="Spotify API Tool GUI" Height="300
+        " Width="500">
+    <Grid>
+        <Button x:Name="LinkSpotifyAPI" Content="Link Spotify API" HorizontalAlignment="Left" Margin="50,30,0,0" VerticalAlignment="Top" Height="148" Width="164" Click="LinkSpotifyAPI_Click"/>
+        <Label x:Name="errorLabel" Content="" HorizontalAlignment="Center" Margin="0,248,0,0" VerticalAlignment="Top" Width="500" Height="26"/>
+        <Button x:Name="OpenExtendedFolder" HorizontalAlignment="Left" Margin="272,30,0,0" VerticalAlignment="Top" Height="148" Width="164" Click="OpenExtendedFolder_Click" >
+            <TextBlock TextWrapping="Wrap" Text="Open Extended Streaming History Folder"/>
+        </Button>
+        <Button x:Name="continueButton" IsEnabled="False" Content="Continue" HorizontalAlignment="Center" Margin="0,201,0,0" VerticalAlignment="Top" Click="continueButton_Click"/>
+
+    </Grid>
+</Window>
