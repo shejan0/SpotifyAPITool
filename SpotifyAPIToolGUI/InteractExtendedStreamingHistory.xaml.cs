@@ -54,15 +54,15 @@ namespace SpotifyAPIToolGUI
                 }
                 streamingHistories.AddRange(filehist);
             }
-            streamingHistories = streamingHistories.OrderBy(hist => hist.TSDateTime).ToList();
+            streamingHistories = streamingHistories.OrderByDescending(hist => hist.TSDateTime).ToList();
             loadCountLabel.Content = $"Loaded {streamingHistories.Count} items from Extended History";
             startDate.Visibility = Visibility.Visible;
             startLabel.Visibility = Visibility.Visible;
             endDate.Visibility = Visibility.Visible;
             endLabel.Visibility = Visibility.Visible;
             findInDateButton.Visibility = Visibility.Visible;
-            startDate.SelectedDate=streamingHistories.First().TSDateTime;
-            endDate.SelectedDate=streamingHistories.Last().TSDateTime;
+            startDate.SelectedDate=streamingHistories.Last().TSDateTime;
+            endDate.SelectedDate=streamingHistories.First().TSDateTime;
         }
 
         private void findInDateButton_Click(object sender, RoutedEventArgs e)
@@ -113,7 +113,6 @@ namespace SpotifyAPIToolGUI
                             a.Items.First().master_metadata_album_artist_name,
                         };
                         writer.WriteLine(string.Join('\t', details));
-
                     }
                 }
             }
