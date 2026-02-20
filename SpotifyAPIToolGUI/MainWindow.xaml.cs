@@ -78,7 +78,7 @@ namespace SpotifyAPIToolGUI
             }
             if (ExtendedStreamingHistory != null && ExtendedStreamingHistory.Count !=0)
             {
-                InteractExtendedStreamingHistory interactext = new(ExtendedStreamingHistory);
+                InteractExtendedStreamingHistory interactext = new(ExtendedStreamingHistory,client);
                 interactext.Show();
             }
             this.Close();

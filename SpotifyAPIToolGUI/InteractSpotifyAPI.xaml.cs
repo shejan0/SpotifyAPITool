@@ -40,45 +40,53 @@ namespace SpotifyAPIToolGUI
             int n = 0;
             likedTracks = new();
             List<SavedTrack> liked = new();
-            var saved = await client.Library.GetTracks(new LibraryTracksRequest()
+            try
             {
-                Limit = 50
-            });
-            while (n < saved.Total)
-            {
-                try
+                var saved = await client.Library.GetTracks(new LibraryTracksRequest()
                 {
-                    saved = await client.Library.GetTracks(new LibraryTracksRequest()
+                    Limit = 50
+                });
+                while (n < saved.Total)
+                {
+                    try
                     {
-                        Limit = 50,
-                        Offset = n
-                    });
+                        saved = await client.Library.GetTracks(new LibraryTracksRequest()
+                        {
+                            Limit = 50,
+                            Offset = n
+                        });
 
-                }
-                catch (APIException ex)
-                {
-                    Console.Error.WriteLine(ex.Message);
-                    Console.Error.WriteLine(ex.StackTrace);
-                    Console.Error.WriteLine(ex.Response.StatusCode);
-                    Console.Error.WriteLine(ex.Response.Body);
-                    if (ex.Response.StatusCode == System.Net.HttpStatusCode.BadGateway)
-                    {
-                        continue;
                     }
-                    throw;
-                }
-                liked.AddRange(saved.Items);
-                for (int a = n; a < liked.Count(); a++)
-                {
-                    FullTrack track = liked[a].Track;
-                    if (track.IsLocal)
+                    catch (APIException ex)
                     {
-                        continue;
+                        Console.Error.WriteLine(ex.Message);
+                        Console.Error.WriteLine(ex.StackTrace);
+                        Console.Error.WriteLine(ex.Response.StatusCode);
+                        Console.Error.WriteLine(ex.Response.Body);
+                        if (ex.Response.StatusCode == System.Net.HttpStatusCode.BadGateway)
+                        {
+                            continue;
+                        }
+                        throw;
                     }
-                    likedTracks.Add(track);
+                    liked.AddRange(saved.Items);
+                    for (int a = n; a < liked.Count(); a++)
+                    {
+                        FullTrack track = liked[a].Track;
+                        if (track.IsLocal)
+                        {
+                            continue;
+                        }
+                        likedTracks.Add(track);
+                    }
+                    n += saved.Items.Count;
+                    pullingLabel.Content = "Current size of saved in RAM: " + n;
                 }
-                n += saved.Items.Count;
-                pullingLabel.Content = "Current size of saved in RAM: " + n;
+            }
+            catch(APITooManyRequestsException ex)
+            {
+                MessageBox.Show($"The API Key currently has a wait of {ex.RetryAfter}");
+                throw;
             }
             pullLiked.IsEnabled = true;
             writeTSVButton.Visibility = Visibility.Visible;
@@ -143,23 +151,34 @@ namespace SpotifyAPIToolGUI
             PrivateUser p = await client.UserProfile.Current();
             string playlistname = "Liked " + DateTime.Now.ToString();
             int parts = -1;
-            FullPlaylist newplaylist = await client.Playlists.Create(p.Id, new PlaylistCreateRequest(playlistname)
+
+            try
             {
-                Public = false,
-            });
-            for (int n = 0; n < likedTracks.Count; n += 50)
-            {
-                if (n % 10000 == 0)
+                FullPlaylist newplaylist = await client.Playlists.Create(p.Id, new PlaylistCreateRequest(playlistname)
                 {
-                    newplaylist = await client.Playlists.Create(p.Id, new PlaylistCreateRequest($"{playlistname}-part {parts}")
+                    Public = false,
+                });
+                for (int n = 0; n < likedTracks.Count; n += 50)
+                {
+                    if (n % 10000 == 0)
                     {
-                        Public = false,
-                    });
-                    parts--;
+                        newplaylist = await client.Playlists.Create(p.Id, new PlaylistCreateRequest($"{playlistname}-part {parts}")
+                        {
+                            Public = false,
+                        });
+                        parts--;
+                    }
+                    var saved = likedTracks.Skip(n).Take(50).ToList();
+                    await client.Playlists.AddItems(newplaylist.Id, new PlaylistAddItemsRequest(saved.Select(x => x.Uri).ToList()));
                 }
-                var saved = likedTracks.Skip(n).Take(50).ToList();
-                await client.Playlists.AddItems(newplaylist.Id, new PlaylistAddItemsRequest(saved.Select(x => x.Uri).ToList()));
             }
+            catch(APITooManyRequestsException ex)
+            {
+                MessageBox.Show($"The API Key currently has a wait of {ex.RetryAfter}");
+                throw;
+            }
+            
+            
             createPlayListButton.IsEnabled = true;
             createPlayListButton.Content = "Recreate playlist";
         }

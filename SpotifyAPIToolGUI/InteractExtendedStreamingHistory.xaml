@@ -14,8 +14,12 @@
         <DatePicker x:Name="endDate" HorizontalAlignment="Left" Margin="196,103,0,0" VerticalAlignment="Top"  Visibility="Hidden"/>
         <Label x:Name="endLabel" Content="Select End Date" HorizontalAlignment="Left" Margin="196,77,0,0" VerticalAlignment="Top" Visibility="Hidden"/>
         <Button x:Name="findInDateButton" Content="Find All in Range" HorizontalAlignment="Left" Margin="163,163,0,0" VerticalAlignment="Top" Click="findInDateButton_Click" Visibility="Hidden"/>
-        <ListBox x:Name="InRangeList" d:ItemsSource="{d:SampleData ItemCount=5}" Margin="48,217,456,61" Visibility="Hidden"/>
-        <Button x:Name="getMostPlayed" Content="Get Most Played" HorizontalAlignment="Left" Margin="58,363,0,0" VerticalAlignment="Top" Click="getMostPlayed_Click" Visibility="Hidden"/>
+        <ListBox x:Name="InRangeList" d:ItemsSource="{d:SampleData ItemCount=5}" Margin="48,217,456,61" Visibility="Hidden" SelectionChanged="InRangeList_SelectionChanged"/>
+        <Button x:Name="getMostPlayed" Content="Get Most Played" HorizontalAlignment="Left" Margin="54,396,0,18" Click="getMostPlayed_Click" Visibility="Hidden"/>
+        <Image x:Name="albumImage" HorizontalAlignment="Left" Height="263" Margin="400,36,0,0" VerticalAlignment="Top" Width="263" Visibility="Hidden"/>
+        <Label x:Name="trackNameLabel" Content="" HorizontalAlignment="Left" Margin="365,320,0,0" VerticalAlignment="Top" Visibility="Hidden"/>
+        <Label x:Name="trackArtistLabel" Content="" HorizontalAlignment="Left" Margin="365,351,0,0" VerticalAlignment="Top" Visibility="Hidden"/>
+        <Label x:Name="trackAlbumLabel" Content="" HorizontalAlignment="Left" Margin="365,382,0,0" VerticalAlignment="Top" Visibility="Hidden"/>
 
     </Grid>
 </Window>

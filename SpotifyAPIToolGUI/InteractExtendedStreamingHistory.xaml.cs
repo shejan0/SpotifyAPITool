@@ -1,5 +1,6 @@
 ﻿using Microsoft.Win32;
 using Newtonsoft.Json;
+using SpotifyAPI.Web;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -25,10 +26,16 @@ namespace SpotifyAPIToolGUI
     {
         private List<StreamingHistoryItem> streamingHistories;
         private List<string> filenames;
-        public InteractExtendedStreamingHistory(List<string> extended)
+        SpotifyClient client = null;
+        public InteractExtendedStreamingHistory(List<string> extended,SpotifyClient? cl)
         {
+            
             filenames = extended;
             InitializeComponent();
+            if(cl != null)
+            {
+                client = cl;
+            }
         }
         private void Window_ContentRendered(object sender, EventArgs e)
         {
@@ -67,9 +74,9 @@ namespace SpotifyAPIToolGUI
 
         private void findInDateButton_Click(object sender, RoutedEventArgs e)
         {
-           InRangeList.ItemsSource=streamingHistories.Where(x => x.TSDateTime >= startDate.SelectedDate && x.TSDateTime <= endDate.SelectedDate).ToList();
-           InRangeList.Visibility=Visibility.Visible;
-           getMostPlayed.Visibility=Visibility.Visible;
+            InRangeList.ItemsSource=streamingHistories.Where(x => x.TSDateTime >= startDate.SelectedDate && x.TSDateTime <= endDate.SelectedDate).ToList();
+            InRangeList.Visibility=Visibility.Visible;
+            getMostPlayed.Visibility=Visibility.Visible;
         }
 
         private void getMostPlayed_Click(object sender, RoutedEventArgs e)
@@ -114,6 +121,31 @@ namespace SpotifyAPIToolGUI
                         };
                         writer.WriteLine(string.Join('\t', details));
                     }
+                }
+            }
+        }
+
+        private void InRangeList_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if(client != null)
+            {
+               StreamingHistoryItem item = (StreamingHistoryItem)InRangeList.SelectedItem;
+                if (item != null)
+                {
+                    FullTrack track = client.Tracks.Get(item.TrackUri).Result;
+                    using (WebClient webclient = new WebClient())
+                    {
+                        byte[] albumart = webclient.DownloadData(track.Album.Images[0].Url);
+                        string contenttype = webclient.ResponseHeaders["Content-Type"];
+                        albumImage.Source = SkiaWpfImageLoader.FromBytes(albumart);
+                        albumImage.Visibility = Visibility.Visible;
+                    }
+                    trackAlbumLabel.Visibility = Visibility.Visible;
+                    trackAlbumLabel.Content = track.Album.Name;
+                    trackNameLabel.Visibility = Visibility.Visible;
+                    trackArtistLabel.Visibility= Visibility.Visible;
+                    trackArtistLabel.Content = string.Join('|', track.Artists.Select(x => x.Name));
+                    trackNameLabel.Content = track.Name;
                 }
             }
         }
