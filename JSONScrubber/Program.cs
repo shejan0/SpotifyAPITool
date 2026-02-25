@@ -1,6 +1,5 @@
 ﻿using System;
 using Newtonsoft.Json;
-using SpotifyAPI.Web;
 using System.IO;
 using System.Collections.Generic;
 using System.Linq;

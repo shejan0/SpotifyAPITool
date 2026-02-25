@@ -256,11 +256,11 @@ namespace SpotifyAPITool
                             durationsongs += TimeSpan.FromMilliseconds(track.DurationMs);
                             writer.WriteLine(string.Join('\t', trackdetails));
                         }
-                        await client.Playlists.AddItems(newplaylist.Id, new PlaylistAddItemsRequest(saved.Items.Select(x => x.Track.Uri).ToList()));
+                        await client.Playlists.AddPlaylistItems(newplaylist.Id, new PlaylistAddItemsRequest(saved.Items.Select(x => x.Track.Uri).ToList()));
                         n += saved.Items.Count;
                         if (n % 10000 == 0)
                         {
-                            newplaylist = await client.Playlists.Create(p.Id, new PlaylistCreateRequest($"{playlistname}-part {parts}")
+                            newplaylist = await client.Playlists.Create(new PlaylistCreateRequest($"{playlistname}-part {parts}")
                             {
                                 Public = false,
                             });

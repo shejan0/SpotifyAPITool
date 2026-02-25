@@ -11,8 +11,8 @@
   <ItemGroup>
     <PackageReference Include="Humanizer" Version="2.14.1" />
     <PackageReference Include="SkiaSharp" Version="3.119.2" />
-    <PackageReference Include="SpotifyAPI.Web" Version="7.3.0" />
-    <PackageReference Include="SpotifyAPI.Web.Auth" Version="7.2.1" />
+    <PackageReference Include="SpotifyAPI.Web" Version="7.4.0" />
+    <PackageReference Include="SpotifyAPI.Web.Auth" Version="7.4.0" />
   </ItemGroup>
 
   <ItemGroup>

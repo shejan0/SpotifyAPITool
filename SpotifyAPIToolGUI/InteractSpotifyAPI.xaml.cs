@@ -154,7 +154,7 @@ namespace SpotifyAPIToolGUI
 
             try
             {
-                FullPlaylist newplaylist = await client.Playlists.Create(p.Id, new PlaylistCreateRequest(playlistname)
+                FullPlaylist newplaylist = await client.Playlists.Create(new PlaylistCreateRequest(playlistname)
                 {
                     Public = false,
                 });
@@ -162,14 +162,14 @@ namespace SpotifyAPIToolGUI
                 {
                     if (n % 10000 == 0)
                     {
-                        newplaylist = await client.Playlists.Create(p.Id, new PlaylistCreateRequest($"{playlistname}-part {parts}")
+                        newplaylist = await client.Playlists.Create(new PlaylistCreateRequest($"{playlistname}-part {parts}")
                         {
                             Public = false,
                         });
                         parts--;
                     }
                     var saved = likedTracks.Skip(n).Take(50).ToList();
-                    await client.Playlists.AddItems(newplaylist.Id, new PlaylistAddItemsRequest(saved.Select(x => x.Uri).ToList()));
+                    await client.Playlists.AddPlaylistItems(newplaylist.Id, new PlaylistAddItemsRequest(saved.Select(x => x.Uri).ToList()));
                 }
             }
             catch(APITooManyRequestsException ex)
